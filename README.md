@@ -140,6 +140,68 @@ Una vez hechos y guardados los cambios en el _Vagrantfile_, creamos el archivo _
 
 ---
 
+## **_Punto D. Aprovisiona Apache_**
+
+Para poder automatizar la instalación del servidor web, se ha editado el script de _provision.sh_ de la siguiente manera:
+
+```
+#!/bin/bash
+apt update
+apt install -y apache2
+systemctl enable apache2
+systemctl start apache2
+echo "Servidor Apache - Amparo Sánchez Ledo - debian-amparo" > /var/www/html/index.html
+```
+
+Desglosemos el script:
+- **#!/bin/bash:** indica al sistema que el archivo debe ejecutarse con Bash
+
+- **apt update:** actualiza la lista de paquetes disponibles.
+
+- **apt install -y apache2:** instala el paquete del servidor web Apache (el _-y_ es para confirmar automáticamente)
+
+- **systemctl enable apache2:** habilita el servicio para que arranque solo al encender la máquina.
+
+- **systemctl start apache2:** inicia el servicio.
+
+- **echo "..." > /var/www/html/index.html:** sobreescribe el mensaje por defecto, cambiándolo por el que queramos poner.
+
+**_Reejecución del aprovisionamiento y prueba:_**
+
+Tras haber modificado el mensaje, para volver a ejecutar solo el aprovisionamiento se usa el comando _vagrant provision_ desde la terminal. Seguidamente, entramos por SSH con _vagrant ssh_ y ejecutamos _sudo systemctl status apache2_ para comprobar que el servicio esté activo.
+
+![Servicio apache](img/apache.png)
+
+Una vez ya está encendido, accedemos desde el navegador del anfitrión a la siguiente URL:
+
+```http://127.0.0.1:8080```
+
+Y comprobamos que el reenvío de puertos funciona y muestra el mensaje que hemos escrito:
+
+![Comprobación Apache](img/comprobacion_apache.png)
+
+**_Esquema de red y análisis del Vagrantfile final_**
+
+El esquema de red de esta práctica ha quedado de la siguiente manera:
+
+![Esquema de red](img/esquema.png)
+
+Y el archivo Vagrantfile (sin los comentarios que trae por defecto) queda de la siguiente manera:
+
+```
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  config.vm.hostname = "debian-amparo"
+  config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "private_network", ip: "192.168.56.10", virtualbox__intnet: true
+  config.vm.provision "shell", path: "provision.sh"
+end
+```
+
+> Y ya con esto se ha finalizado la tarea, en la cual hemos aprendido a levantar una máquina Debian en __VirtualBox__ desde código de __VSCode__ con __Vagrant__, configurar sus tarjetas de red y el reenvío de puertos en el __Vagrantfile__, y automatizar la instalación de un __servidor web Apache__ mediante un script. A continuación, las fuentes consultadas:
+
+---
+
 ## **_Fuentes consultadas_**
 - [Documentación oficial de Vagrant: Introducción](https://developer.hashicorp.com/vagrant/intro)
 - [Documentación oficial de Vagrant: Vagrantfile](https://developer.hashicorp.com/vagrant/docs/vagrantfile)
