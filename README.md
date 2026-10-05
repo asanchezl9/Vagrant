@@ -1,5 +1,5 @@
 # **Tarea 1.1.2 - Vagrant**
-##### _Amparo Sánchez Ledo - 02/10/2026_
+##### _Amparo Sánchez Ledo - ASIR 2 - 02/10/2026_
 
 > Antes de comenzar, debemos saber que (según la documentación oficial) **Vagrant** es una herramienta para _construir y gestionar entornos de máquinas virtuales en un único flujo de trabajo_.
 
@@ -78,21 +78,26 @@
 
 - **_Qué es /vagrant?_**
     - Carpeta dentro de la máquina Debian que está sincronizada en tiempo real con la carpeta proyecto del PC anfitrión (donde se encuentra el Vagrantfile), permitiendo compartir archivos entre ambos automáticamente.
+    Al ejecutar un ls -la /vagrant para listar su contenido, aparecen reflejados los archivos del repositorio del anfitrión:
 
+        ![ls -la /vagrant](/img/ls_punto4.png)
 
+---
 
+## **_Punto B. Mi primera máquina en Vagrant_**
+**_Para la inicialización y arranque:_**
 
+Se generó el archivo inicial con el uso del comando _vagrant init debian/bookworm_; seguidamente, se verificó su sintaxis usando _vagrant validate_ y se levantó la máquina en VirtualBox con _vagrant up_, accediendo a ella con _vagrant ssh_.
 
+**_Observaciones:_**
+- **Hostname:** Nombre inicial asignado por la box es _bookworm_
+- **Sistema operativo:** _Debian GNU /Linux 12 (bookworm)_
+- **Interfaces (ip a):** Dispone de _loopback (127.0.0.1/8)_ y la _interfaz principal eth0_ en modo NAT con la IP _10.0.2.15/24_.
+- **Rutas (ip r):** Su ruta por defecto hacia el exterior (_default_) apunta a la puerta de enlace _10.0.2.2_ a través de _eth0_
 
+![Comprobaciones iniciales - Parte B](/img/comprobaciones_parteb.png)
 
-
-
-
-
-
-
-
-
+---
 
 
 
