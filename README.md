@@ -1,7 +1,7 @@
 # **Tarea 1.1.2 - Vagrant**
 ##### _Amparo Sánchez Ledo - ASIR 2 - 02/10/2026_
 
-> Antes de comenzar, debemos saber que (según la documentación oficial) **Vagrant** es una herramienta para _construir y gestionar entornos de máquinas virtuales en un único flujo de trabajo_.
+> Antes de comenzar, debemos saber que (según la documentación oficial) **Vagrant** es una herramienta para _construir y gestionar entornos de máquinas virtuales en un único flujo de trabajo_. Como detalle, el trabajo se ha realizado con el uso de VSCode (subiendo los archivos a GitHub, la creación del README.md, los comandos de Vagrant...) y con VirtualBox.
 
 ![Vagrant logo](https://enjoybahia.es/wp-content/uploads/2020/02/vagrant-logo.png)
 
@@ -10,10 +10,10 @@
 #### **_1. Vagrant y el Vagrantfile_**
 
 - **_¿Qué problema resuelve Vagrant?_**
-    - En una situación real de trabajo, el configurar servidores a mano puede provocar _errores u olvidos_ si otra persona intenta replicarlo en otro PC, pero gracias a Vagrant (que permite describir el entorno en archivos de texto que se guardan en Git) aseguras que todos tengan exactamente la _misma máquina y configuraciones_, de manera que permite _borrar y recrearla de cero en cuestión de minutos_.
+    - En una situación real de trabajo, el configurar servidores a mano puede provocar _errores u olvidos_ si otra persona intenta replicarlo en otro PC, pero gracias a Vagrant (que permite describir el entorno en archivos de texto que se guardan en Git) aseguras que todos tengan exactamente la _misma máquina y configuraciones_, de manera que permite _borrarla y recrearla de cero en cuestión de minutos_.
   
 - **_Distinción de elementos_**
-    - **Anfitrión:** _Ordenador físico_ donde instalas todo
+    - **Anfitrión:** _Ordenador físico_ donde instalas todo.
     - **Proveedor de virtualización:** _Programa que crea y ejecuta las máquinas virtuales_, de manera que Vagrant únicamente le da órdenes.
     - **Box:** _Plantilla o imagen base preinstalada del sistema operativo_ (en este caso, Debian 12) que Vagrant descarga y clona para no tener que instalar de cero con una ISO.
     - **Máquina virtual:** _Servidor virtual_ que ya está corriendo dentro del proveedor a partir de esa box.
@@ -28,7 +28,7 @@
     - Herramienta de Vagrant que _automatiza la instalación de programas y la configuración del sistema_ para no hacerlo a mano al encender la máquina.
 
 - **_¿Dónde se ejecuta el script?_**
-    - Se ejecuta _dentro de la máquina virtual_ (usando _root_).
+    - Se ejecuta _dentro de la máquina virtual_ (usando permisos de _root_).
 
 - **_¿Cuándo lanza Vagrant el script?_**
     - _Por defecto_, lo lanza solo la primera vez que ejecutas _vagrant up_ al crear la máquina.
@@ -47,7 +47,7 @@
     - Configura siempre la primera tarjeta en modo _NAT_. La usa obligatoriamente para conectarse por SSH a la máquina virtual y para darle salida a Internet.
 
 - **_¿Cómo se añade en el Vagrantfile una segunda interfaz con dirección IP fija?_**
-    - Añadiendo la línea _config.vm.network "private_network", ip: "192.168.56.10"._
+    - Añadiendo la línea `config.vm.network "private_network", ip: "192.168.56.10"`.
 
 - **_Comparativa de redes (con quién se comunica la máquina en cada caso)_**
     - **NAT:** Se comunica hacia _Internet_, pero nadie desde fuera puede iniciar conexión hacia la máquina.
@@ -68,46 +68,77 @@
 #### **_Punto 4. Órdenes y carpeta compartida_**
 | **Orden** | **Uso** | **Ejecución** |
 | --- | --- | --- |
-| _up_ | crear la máquina por primera vez o encenderla si estaba apagada | Si |
-| _status_ | comprobar si la máquina está encendida, apagada o sin crear | Si |
-| _ssh_ | administrar o comprobar el sistema desde la terminal de Debian | Si |
-| _reload_ | reiniciar la máquina para aplicar cambios realizados | Si |
-| _provision_ | ejecutar el script bash sin tener que apagar ni reiniciar la máquina | Si |
-| _halt_ | apagar la máquina sin borrarla | Si |
-| _destroy_ | eliminar la máquina por completo del disco para empezar de cero | No |
+| _up_ | Crear la máquina por primera vez o encenderla si estaba apagada | Sí |
+| _status_ | Comprobar si la máquina está encendida, apagada o sin crear | Sí |
+| _ssh_ | Administrar o comprobar el sistema desde la terminal de Debian | Sí |
+| _reload_ | Reiniciar la máquina para aplicar cambios realizados | Sí |
+| _provision_ | Ejecutar el script bash sin tener que apagar ni reiniciar la máquina | Sí |
+| _halt_ | Apagar la máquina sin borrarla | Sí |
+| _destroy_ | Eliminar la máquina por completo del disco para empezar de cero | No |
 
-- **_Qué es /vagrant?_**
-    - Carpeta dentro de la máquina Debian que está sincronizada en tiempo real con la carpeta proyecto del PC anfitrión (donde se encuentra el Vagrantfile), permitiendo compartir archivos entre ambos automáticamente.
-    Al ejecutar un ls -la /vagrant para listar su contenido, aparecen reflejados los archivos del repositorio del anfitrión:
+- **_¿Qué es /vagrant?_**
+    - Carpeta dentro de la máquina Debian que está sincronizada en tiempo real con la carpeta del proyecto del PC anfitrión (donde se encuentra el Vagrantfile), permitiendo compartir archivos entre ambos automáticamente.
+    Al ejecutar un `ls -la /vagrant` para listar su contenido, aparecen reflejados los archivos del repositorio del anfitrión:
 
-        ![ls -la /vagrant](/img/ls_punto4.png)
+    ![ls -la /vagrant](img/ls_punto4.png)
 
 ---
 
 ## **_Punto B. Mi primera máquina en Vagrant_**
+
 **_Para la inicialización y arranque:_**
 
-Se generó el archivo inicial con el uso del comando _vagrant init debian/bookworm_; seguidamente, se verificó su sintaxis usando _vagrant validate_ y se levantó la máquina en VirtualBox con _vagrant up_, accediendo a ella con _vagrant ssh_.
+Se generó el archivo inicial con el uso del comando _vagrant init debian/bookworm64_; seguidamente, se verificó su sintaxis usando _vagrant validate_ y se levantó la máquina en VirtualBox con _vagrant up_, accediendo a ella con _vagrant ssh_.
 
 **_Observaciones:_**
-- **Hostname:** Nombre inicial asignado por la box es _bookworm_
-- **Sistema operativo:** _Debian GNU /Linux 12 (bookworm)_
-- **Interfaces (ip a):** Dispone de _loopback (127.0.0.1/8)_ y la _interfaz principal eth0_ en modo NAT con la IP _10.0.2.15/24_.
-- **Rutas (ip r):** Su ruta por defecto hacia el exterior (_default_) apunta a la puerta de enlace _10.0.2.2_ a través de _eth0_
 
-![Comprobaciones iniciales - Parte B](/img/comprobaciones_parteb.png)
+- **Hostname:** El nombre inicial asignado por la box es _bookworm_.
+
+- **Sistema operativo:** _Debian GNU/Linux 12 (bookworm)_.
+
+- **Interfaces (ip a):** Dispone de _loopback (127.0.0.1/8)_ y la _interfaz principal eth0_ en modo NAT con la IP _10.0.2.15/24_.
+
+- **Rutas (ip r):** Su ruta por defecto hacia el exterior (_default_) apunta a la puerta de enlace _10.0.2.2_ a través de _eth0_.
+
+![Comprobaciones iniciales - Parte B](img/comprobaciones_parteb.png)
 
 ---
 
+## **_Punto C. Completa el Vagrantfile_**
 
+Se han realizado ciertas modificaciones en el _Vagrantfile_:
 
+- **Imagen base:** `config.vm.box = "debian/bookworm64"` (se mantiene igual)
 
+- **Nombre de la máquina (hostname):** `config.vm.hostname = "debian-amparo"` (línea añadida)
 
+- **Reenvío de puertos:** `config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"` (línea configurada para escuchar únicamente en `127.0.0.1`)
 
+- **Segunda interfaz de red:** `config.vm.network "private_network", ip: "192.168.56.10", virtualbox__intnet: true` (para añadir un segundo adaptador con IP fija en red interna)
 
+- **Script de aprovisionamiento:** `config.vm.provision "shell", path: "provision.sh"` (línea añadida para vincular el script Bash)
 
+Una vez hechos y guardados los cambios en el _Vagrantfile_, creamos el archivo _provision.sh_, validamos el _Vagrantfile_ con _vagrant validate_ y reiniciamos la máquina con _vagrant reload_ para que se aplique la configuración.
 
+**_Comprobación de cambios:_**
 
+> Volvemos a acceder con _vagrant ssh_
+
+- **Hostname nuevo:** Ejecutando _hostname_ podemos ver que el nombre ha cambiado a _debian-amparo_.
+
+- **Interfaces (ip a):** Comprobamos que se conserva la primera interfaz NAT _eth0_ con la dirección _10.0.2.15/24_ (además de quedar declarada la segunda interfaz con IP fija _192.168.56.10/24_ en el _Vagrantfile_).
+
+- **Rutas (ip r):** Se verifica que la salida por defecto de la NAT se mantiene por _default via 10.0.2.2 dev eth0_ y la red local _10.0.2.0/24 dev eth0_.
+
+- **Diferencia entre red interna y host-only:** En la _red interna_ (VirtualBox) solo se comunican las máquinas virtuales entre sí dentro de una red aislada sin acceso desde el anfitrión; mientras que en _host-only_ (VMware) se crea un adaptador virtual en el equipo físico que permite la comunicación directa entre el anfitrión y la máquina virtual.
+
+- **Script de aprovisionamiento (provision.sh):** Creamos el archivo _provision.sh_ en la raíz del repositorio para que _vagrant reload_ valide la ruta configurada y, al entrar por SSH, comprobamos con _ls -la /vagrant_ que el script ya aparece sincronizado dentro de la máquina.
+
+![Comprobación de cambios - Punto C](img/cambios_puntoc.png)
+
+> **Nota:** En caso de que al iniciar o recargar Vagrant en Windows no deje acceder por un error del controlador `hostonlyif` de VirtualBox, se puede comentar temporalmente la línea `config.vm.network "private_network", ip: "192.168.56.10", virtualbox__intnet: true` poniendo una `#` delante.
+
+---
 
 ## **_Fuentes consultadas_**
 - [Documentación oficial de Vagrant: Introducción](https://developer.hashicorp.com/vagrant/intro)
